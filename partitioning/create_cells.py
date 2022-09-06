@@ -70,6 +70,7 @@ def parse_args():
 
 
 def _init_parallel(img, level):
+    # returns each image with the hex_code of the node at level=level
     cell = create_s2_cell(img[1], img[2])
     hexid = create_cell_at_level(cell, level)
     return [*img, hexid, cell]
@@ -78,13 +79,17 @@ def _init_parallel(img, level):
 def init_cells(img_container_0, level):
 
     start = time()
+    # 'partial' sets the level parameter to a fixed value and executes _init_parallel
     f = partial(_init_parallel, level=level)
     img_container = []
-    with Pool(8) as p:
+    #Pool is a parallelizing function (8 workers)
+    with Pool(8) as p: 
+        # shuffles the list of images.
         for x in p.imap_unordered(f, img_container_0, chunksize=1000):
             img_container.append(x)
     logging.debug(f"Time multiprocessing: {time() - start:.2f}s")
     start = time()
+    # h tells how many images are on a given cell. (dictionary)
     h = dict(Counter(list(list(zip(*img_container))[3])))
     logging.debug(f"Time creating h: {time() - start:.2f}s")
 
@@ -92,6 +97,11 @@ def init_cells(img_container_0, level):
 
 
 def delete_cells(img_container, h, t_min):
+    # based on h, a dictionary having cells (id) and amount of images (value)
+    # it discards all images associated to cells having value < t_min
+    # so I think that a minimum level meaning that it splits the world into 4^(l=2) cells.
+    # and then it removes those where there wasn't enough images.
+    # finally it splits the huge cells into a further level on the quad-tree.
     del_cells = {k for k, v in h.items() if v <= t_min}
     h = {k: v for k, v in h.items() if v > t_min}
     img_container_f = []
@@ -107,6 +117,7 @@ def gen_subcells(img_container_0, h_0, level, t_max):
     h = {}
     for img in img_container_0:
         hexid_0 = img[3]
+        # if the cell is already huge then it creates a finer cell and stores the image there.
         if h_0[hexid_0] > t_max:
             hexid = create_cell_at_level(img[4], level)
             img[3] = hexid
@@ -125,11 +136,13 @@ def gen_subcells(img_container_0, h_0, level, t_max):
 
 def create_s2_cell(lat, lng):
     p1 = s2.LatLng.from_degrees(lat, lng)
+    # returns a cell having face, level, orientation and id. level=max_level=30
     cell = s2.Cell.from_lat_lng(p1)
     return cell
 
 
 def create_cell_at_level(cell, level):
+    # returns the hex code of the parent node at level=level.
     cell_parent = cell.id().parent(level)
     hexid = cell_parent.to_token()
     return hexid
@@ -205,11 +218,14 @@ def main():
         os.makedirs(args.output)
 
     # initialize
+    # starts with level=30 assigning each image to a given cell using s2spheres
+    # retrieves for each image the parent node id at the level indicated in args.lvlmin
     logging.info("Initialize cells of level {} ...".format(level))
     start = time()
     img_container, h = init_cells(img_container, level)
     logging.info(f"Time: {time() - start:.2f}s - Number of classes: {len(h)}")
 
+    #removes those images from cells having less than t_min images.
     logging.info("Remove cells with |img| < t_min ...")
     start = time()
     img_container, h = delete_cells(img_container, h, args.img_min)

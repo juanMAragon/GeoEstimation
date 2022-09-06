@@ -1,0 +1,26 @@
+> so it reads the dataset_csv_file which contains:
+    - image path
+    - image latitude
+    - image longitude
+
+> sets by default lvl_min=2 and lvl_max=30
+
+> Initializes the cells:
+    - it takes the lat and long to retrieve the cell (level=lvl_max)
+    - and then retrieves the parent hexid at level=lvl_min.
+    - so grouping all the images, hexids and cells in a list
+    - it shuffles the list and returns the container + a dictionary
+    - the dictionary tells how many images are on a given cell.
+
+> Cell removal:
+    - for each parent id having less than t_min images it removes the cell and the images.
+
+> Creation of subcells:
+    - starting from level = min_lvl, while level < max_lvl.
+    - if there is any cell having more than t_max cells:
+    - for each image it gets the cell hexid. if the cell is overbooked then for that image it searches a finer cell (at level=prev_level+1)
+    - updates the images->cell distribution.
+    - when there are no more overbooked cells or the level cannot be improved it stops
+
+> Cell removal:
+    - for each parent id having less than t_min images it removes the cell and the images.
