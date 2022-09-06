@@ -117,3 +117,13 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# all yaml files
+*.yaml
+*.yml 
+
+# all checkpoints
+*.ckpt 
+
+# events
+events.out.*
