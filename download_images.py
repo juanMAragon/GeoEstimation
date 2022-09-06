@@ -14,6 +14,7 @@ import pandas as pd
 import PIL
 from PIL import ImageFile
 
+requests.packages.urllib3.disable_warnings()
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -69,11 +70,11 @@ def _thumbnail(img: PIL.Image, size: int) -> PIL.Image:
     if w < h:
         ow = size
         oh = int(size * h / w)
-        return img.resize((ow, oh), PIL.Image.BILINEAR)
+        return img.resize((ow, oh), PIL.Image.Resampling.BILINEAR)
     else:
         oh = size
         ow = int(size * w / h)
-        return img.resize((ow, oh), PIL.Image.BILINEAR)
+        return img.resize((ow, oh), PIL.Image.Resampling.BILINEAR)
 
 
 def flickr_download(x, size_suffix="z", min_edge_size=None):
@@ -91,7 +92,11 @@ def flickr_download(x, size_suffix="z", min_edge_size=None):
     else:
         url = url_original
 
-    r = requests.get(url)
+    try:
+        r = requests.get(url, verify=False)
+    except Exception as e:
+        logger.error(f"{image_id} : {url}: {e}")
+        return None
     if r:
         try:
             image = PIL.Image.open(BytesIO(r.content))

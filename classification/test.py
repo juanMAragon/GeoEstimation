@@ -29,15 +29,18 @@ def parse_args():
     args.add_argument(
         "--image_dirs",
         nargs="+",
-        default=["resources/images/im2gps", "resources/images/im2gps3k"],
+        default=[
+            "/media/vid1/all_jaragon/im2gps/",
+            "/media/vid1/all_jaragon/im2gps3ktest"
+        ],
         help="Whitespace separated list of image folders to evaluate",
     )
     args.add_argument(
         "--meta_files",
         nargs="+",
         default=[
-            "resources/images/im2gps_places365.csv",
-            "resources/images/im2gps3k_places365.csv",
+            "/media/vid1/all_jaragon/im2gps/im2gps_places365.csv",
+            "/media/vid1/all_jaragon/im2gps3ktest/im2gps3k_places365.csv",
         ],
         help="Whitespace separated list of respective meta data (ground-truth GPS positions). Required columns: 'IMG_ID,LAT,LON' or 'img_id, latitude, longitude'",
     )

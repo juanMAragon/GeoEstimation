@@ -23,8 +23,8 @@ model_params:
       - resources/s2_cells/cells_50_2000.csv
       - resources/s2_cells/cells_50_1000.csv
   # images stored in chunks
-  msgpack_train_dir: resources/images/mp16
-  msgpack_val_dir: resources/images/yfcc25600
+  msgpack_train_dir: /media/vid1/all_jaragon/mp16_msg #resources/images/mp16
+  msgpack_val_dir: /media/vid1/all_jaragon/yfcc25600_msg #resources/images/yfcc25600
   # meta information i.e. coordinates for each image
   train_meta_path: resources/mp16_places365.csv
   val_meta_path: resources/yfcc25600_places365.csv 

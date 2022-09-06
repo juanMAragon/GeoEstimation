@@ -105,7 +105,7 @@ def accuracy(output, target, partitioning_shortnames: list, topk=(1, 5, 10)):
 
             res = {}
             for k in topk:
-                correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+                correct_k = correct[:k].reshape(-1).float().sum(0, keepdim=True)
                 res[k] = correct_k / batch_size
             return res
 
