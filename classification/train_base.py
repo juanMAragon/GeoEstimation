@@ -57,7 +57,9 @@ class MultiPartitioningClassifier(pl.LightningModule):
         return model, classifier
 
     def forward(self, x):
-        fv = self.model(x)
+        # featureVector
+        fv = self.model(x) 
+        # predicted classes
         yhats = [self.classifier[i](fv) for i in range(len(self.partitionings))]
         return yhats
 
@@ -408,7 +410,7 @@ def main():
     # init classifier
     model = MultiPartitioningClassifier(hparams=Namespace(**model_params))
 
-    logger = pl.loggers.TensorBoardLogger(save_dir=str(out_dir), name="tb_logs")
+    logger = pl.loggers.TensorBoardLogger(save_dir=str(out_dir), name="tb_logs", log_graph=True)
     checkpoint_dir = out_dir / "ckpts" / "{epoch:03d}-{val_loss:.4f}"
     checkpointer = pl.callbacks.model_checkpoint.ModelCheckpoint(checkpoint_dir)
 

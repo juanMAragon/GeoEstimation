@@ -1,0 +1,34 @@
+MultiPartitioningClassifier:
+    - it uses a ResNet50 as model (config/baseM.yml)
+    - partitionings: 
+        *coarse: each cell can contain at most 5000 images (min required is 50)
+        *medium: each cell can contain at most 2000 images (min required is 50)
+        *fine: each cell can contain at most 1000 images (min required is 50)
+
+        _lable2index: maps from cell hexid to class index. Basically, it is a class (a pandas table) to retrieve the class_index or the cell_hexid.
+
+    - hierarchy: (read below)
+        - returns a matrix M [|classes| x |partitionings|]
+
+
+MultiPartitioningClassifier:
+
+    - partitionings is a list with (3 by default) types of partitionigs (coarse, medium, fine).
+        > each partition is a class having a pandas and a dictionary with the information of _lable2index
+        allows to get the lat-lon, the class from index, and check if the class is valid.
+            - class = cell's hexid
+            - index = class name.
+    
+    if there are more than 1 partitions it retrieves the list of partitionings and a hierarchy version.
+
+    - hierarchy: merges all the available partitionings, defining a set of classes.
+
+    from each of the classes in the finest partition:
+        - it gets the binary version of each class so to obtain the level L of the cell.
+        - then for all the parents of the cells (levels L,L-1,..,2) it gets the hexid and checks if the
+        parent cell is in any of the partitions dict. if so the hexid is saved. 
+        It stores only 3 parents (as many as partitionings).
+
+        1. take a partition (start with the finest). does it contain the parent cell? if yes then store the parent and go to the other partition.
+        if not just move to the other partition. There are no more partitions? then repeat the procedure but searching the parent of the parent.
+        => in the end it retrieves a matrix M with many classes as original cells (hexids) and 3 columns having the class index.

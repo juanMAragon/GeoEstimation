@@ -24,6 +24,7 @@ class MsgPackIterableDatasetMultiTargetWithDynLabels(torch.utils.data.IterableDa
     def __init__(
         self,
         path: str,
+        # target_mapping is the json: {"img_path": [class1, class2, class3], ...}
         target_mapping: Dict[str, int],
         key_img_id: str = "id",
         key_img_encoded: str = "image",

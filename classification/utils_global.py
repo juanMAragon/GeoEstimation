@@ -20,7 +20,7 @@ def check_is_valid_torchvision_architecture(architecture: str):
     if architecture not in available:
         raise ValueError(f"{architecture} not in {available}")
 
-
+#base model is the one of the feature extraction phase. it outputs a large row vector as feature.
 def build_base_model(arch: str):
 
     model = torchvision.models.__dict__[arch](pretrained=True)
@@ -39,6 +39,7 @@ def build_base_model(arch: str):
     else:
         raise NotImplementedError
 
+    #adaptive means that you specify only the output size and it calculates the stride and kernel_size.
     model.avgpool = torch.nn.AdaptiveAvgPool2d(1)
     model.flatten = torch.nn.Flatten(start_dim=1)
     return model, nfeatures
