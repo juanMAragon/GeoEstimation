@@ -14,6 +14,8 @@ from classification import utils_global
 from classification.s2_utils import Partitioning, Hierarchy
 from classification.myDataset import ImageIterableDatasetMultiTargetWithDynLabels
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning) 
 
 class MultiPartitioningClassifier(pl.LightningModule):
     def __init__(self, hparams: Namespace):

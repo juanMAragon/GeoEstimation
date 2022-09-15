@@ -14,6 +14,9 @@ from classification import utils_global
 from classification.s2_utils import Partitioning, Hierarchy
 from classification.dataset import MsgPackIterableDatasetMultiTargetWithDynLabels
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning) 
+
 
 class MultiPartitioningClassifier(pl.LightningModule):
     def __init__(self, hparams: Namespace):
@@ -410,7 +413,7 @@ def main():
     # init classifier
     model = MultiPartitioningClassifier(hparams=Namespace(**model_params))
 
-    logger = pl.loggers.TensorBoardLogger(save_dir=str(out_dir), name="tb_logs", log_graph=True)
+    logger = pl.loggers.TensorBoardLogger(save_dir=str(out_dir), name="tb_logs")
     checkpoint_dir = out_dir / "ckpts" / "{epoch:03d}-{val_loss:.4f}"
     checkpointer = pl.callbacks.model_checkpoint.ModelCheckpoint(checkpoint_dir)
 
