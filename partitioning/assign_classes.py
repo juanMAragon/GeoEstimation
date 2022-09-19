@@ -84,7 +84,7 @@ if __name__ == "__main__":
     )
 
     config = config["model_params"]
-    for dataset_type in ["val", "train"]:
+    for dataset_type in ["train"]:#["val", "train"]:
         label_mapping_file = config[f"{dataset_type}_meta_path"]
         output_file = config[f"{dataset_type}_label_mapping"]
         logging.info(label_mapping_file)

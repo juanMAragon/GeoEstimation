@@ -2,10 +2,13 @@
 /resources
 /tmp
 /results
+/outDirs
 mp16_places365.csv
 *.json
 !cfg_ex.json
-
+/new_resources/37.810/
+/lightning_logs
+/new_resources
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
